@@ -1,32 +1,61 @@
 import { GraphQLFileLoader } from "@graphql-tools/graphql-file-loader";
 import { loadSchemaSync } from "@graphql-tools/load";
-import { db } from "./database.js";
 import { addResolversToSchema } from "@graphql-tools/schema";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import { PostsDataSource } from "./postsDataSource.js";
+import { TagsDataSource } from "./tagsDataSource.js";
+import { getAuthors } from "./authorsDataSource.js";
 
 const schema = loadSchemaSync("schema.graphql", {
   loaders: [new GraphQLFileLoader()],
 });
 
+interface ContextValue {
+  dataSources: {
+    posts: PostsDataSource;
+    tags: TagsDataSource;
+  };
+}
+
+type Post = {
+  id: number;
+  title: string;
+  body: string;
+  tags?: string[];
+};
+
+type Author = {
+  id: number;
+  name: string;
+};
+
 const resolvers = {
   Query: {
-    authors: () =>
-      Object.entries(db.users).map(([id, user]) => ({ id, ...user })),
+    authors: () => getAuthors(),
   },
   Post: {
-    tags: ({ tags = [] }: { tags?: string[] }) =>
-      tags.map((name) => ({ name })),
+    tags: (parent: Post, _: any, { dataSources }: ContextValue) =>
+      dataSources.tags.getTagsBy(parent.id),
   },
   Author: {
-    posts: ({ id }: { id: string }) =>
-      Object.entries(db.blogs)
-        .filter(([_, post]) => post.author === id)
-        .map(([id, post]) => ({ id, ...post })),
+    posts: (parent: Author, _: any, { dataSources }: ContextValue) =>
+      dataSources.posts.getPostsBy(parent.id),
   },
 };
 
 const schemaWithResolvers = addResolversToSchema({ schema, resolvers });
-const apolloServer = new ApolloServer({ schema: schemaWithResolvers });
-const { url } = await startStandaloneServer(apolloServer);
+const apolloServer = new ApolloServer<ContextValue>({
+  schema: schemaWithResolvers,
+});
+const { url } = await startStandaloneServer(apolloServer, {
+  context: async () => {
+    return {
+      dataSources: {
+        posts: new PostsDataSource(),
+        tags: new TagsDataSource(),
+      },
+    };
+  },
+});
 console.log(`Apollo Server started: ${url}`);
