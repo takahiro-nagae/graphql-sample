@@ -100,6 +100,11 @@ export const db = {
       author: "Erika",
       body: "今日は久しぶりに絵を描きました。自分の想像を形にするのは楽しいですね。",
     },
+    21: {
+      title: "おすすめの映画",
+      author: "Takashi",
+      body: "最近見た映画でおすすめは「パラサイト」です。ストーリーが面白いです。",
+    },
   },
   users: {
     Takashi: {
