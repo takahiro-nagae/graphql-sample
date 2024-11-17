@@ -14,5 +14,9 @@
   "devDependencies": {
     "@types/node": "20.14.9",
     "typescript": "5.5.3"
+  },
+  "scripts": {
+    "transpile": "tsc",
+    "start": "yarn transpile && node ./dist/index.js"
   }
 }
