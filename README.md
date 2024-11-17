@@ -1,1 +1,3 @@
 # graphql-sample
+
+GraphQL のサンプル
