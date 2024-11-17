@@ -4,6 +4,7 @@ export const db = {
       title: "今日の天気",
       author: "Takashi",
       body: "今日はいい天気でした。明日もいい天気になるといいな。",
+      tags: ["天気", "日記"],
     },
     2: {
       title: "初めての料理",
@@ -14,6 +15,7 @@ export const db = {
       title: "ランニング日記",
       author: "Kenji",
       body: "朝5km走りました。気分爽快！",
+      tags: ["ランニング", "朝活"],
     },
     4: {
       title: "映画レビュー: インセプション",
@@ -29,6 +31,7 @@ export const db = {
       title: "ガーデニング初心者",
       author: "Miki",
       body: "バジルの種を植えました。芽が出るのが楽しみです！",
+      tags: ["ガーデニング", "初心者"],
     },
     7: {
       title: "ペットの紹介",

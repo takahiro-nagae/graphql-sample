@@ -15,7 +15,8 @@ const resolvers = {
       Object.entries(db.users).map(([id, user]) => ({ id, ...user })),
   },
   Post: {
-    tags: ({ tags }: { tags: string[] }) => tags.map((name) => ({ name })),
+    tags: ({ tags = [] }: { tags?: string[] }) =>
+      tags.map((name) => ({ name })),
   },
   Author: {
     posts: ({ id }: { id: string }) =>
